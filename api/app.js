@@ -3,9 +3,19 @@
  */
 const express = require("express");
 const app = express();
-
+const defaultVersion = "v2";
 // middleware
 app.use(express.json());
+
+app.use(function (req, res, next) {
+  if (req.headers["accept-version"]) {
+    req.api_version = req.headers["accept-version"];
+  } else if (req.query["_apiVersion"]) {
+    req.api_version = req.query["_apiVersion"];
+  } else {
+    req.api_version = defaultVersion;
+  }
+});
 
 app.response.render = function (users) {
   this.format({
@@ -29,7 +39,16 @@ app.response.render = function (users) {
 };
 
 // Routes
-app.use("/users", require("./routes/users"));
+app.use(
+  "/users",
+  apiVersions({
+    v1: require("./routes/v1/users"),
+    v2: require("./routes/v2/users"),
+  })
+);
+app.use("/v1/users", require("./routes/v1/users"));
+app.use("/v2/users", require("./routes/v2/users"));
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

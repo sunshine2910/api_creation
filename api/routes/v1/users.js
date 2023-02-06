@@ -2,7 +2,7 @@
  * User routes
  */
 const { Router } = require("express");
-const { User } = require("../models");
+const { User } = require("../../models");
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 
   const users = await User.findAll(options);
 
-  res.render(users);
+  res.json(users);
 });
 
 router.post("/", async (req, res) => {
