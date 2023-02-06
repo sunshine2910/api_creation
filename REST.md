@@ -41,7 +41,7 @@ FilterA and FilterB are resource fields.
 
 #### Pagination
 
-`page=<id_page>&item_per_page=<nb_items>`
+`page=<id_page>&items_per_page=<nb_items>`
 
 LIMIT = item_per_page
 OFFSET = (page - 1) * item_per_page
