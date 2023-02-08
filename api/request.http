@@ -1,5 +1,6 @@
-GET http://localhost:3000/users
+GET http://localhost:3000/
 Accept: application/text
+Accept-Language: fr
 
 
 ###

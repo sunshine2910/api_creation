@@ -3,7 +3,7 @@
  */
 const express = require("express");
 const app = express();
-const defaultVersion = "v2";
+
 // middleware
 app.use(express.json());
 
@@ -13,8 +13,9 @@ app.use(function (req, res, next) {
   } else if (req.query["_apiVersion"]) {
     req.api_version = req.query["_apiVersion"];
   } else {
-    req.api_version = defaultVersion;
+    req.api_version = "v1";
   }
+  next();
 });
 
 app.response.render = function (users) {
@@ -39,18 +40,23 @@ app.response.render = function (users) {
 };
 
 // Routes
-app.use(
-  "/users",
-  apiVersions({
-    v1: require("./routes/v1/users"),
-    v2: require("./routes/v2/users"),
-  })
-);
+//app.use(
+//  "/users",
+//  apiVersions({
+//    v1: require("./routes/v1/users"),
+//    v2: require("./routes/v2/users"),
+//  })
+//);
 app.use("/v1/users", require("./routes/v1/users"));
 app.use("/v2/users", require("./routes/v2/users"));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.get("/", async (req, res) => {
+  const i18next = await require("./lib/i18n");
+  console.log(i18next);
+  i18next.changeLanguage(req.headers["accept-language"]);
+  res.send(i18next.t("Hello"));
+  req.t("Hello {{name}}", { name: "John" });
+  res.t("Hello {{name}}!", { name: "John" });
 });
 
 module.exports = app;
