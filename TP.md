@@ -31,3 +31,20 @@ app.use("/users", apiVersions({
 ```js
 app.use(negociate_trad(i18next));
 ```
+
+## TP4 : HATEOAS
+- Permettre d'ajouter l'HATEOAS sur une route via un middleware
+```js
+useHATEOAS({
+  pagination: true, // Activate pagination links
+  links: { // Activate custom links
+      self: {},
+      update: {
+        type: "PUT",
+      },
+      videos: {
+        path: "/videos",
+      },
+  }
+});
+```

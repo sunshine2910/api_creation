@@ -2,6 +2,8 @@
  * User routes
  */
 const { Router } = require("express");
+const PaginationDTO = require("../../dto/PaginationDTO");
+const UsersDtos = require("../../dto/UsersDto");
 const { User } = require("../../models");
 
 const router = Router();
@@ -19,8 +21,12 @@ router.get("/", async (req, res) => {
   }
 
   const users = await User.findAll(options);
-
-  res.json(users);
+  delete options.offset;
+  delete options.limit;
+  const totalUsers = await User.count(options);
+  const usersDtos = users.map((user) => new UsersDtos(user, req));
+  res.setHeader("Content-Type", "application/hal+json");
+  res.send(new PaginationDTO(usersDtos, totalUsers, req));
 });
 
 router.post("/", async (req, res) => {

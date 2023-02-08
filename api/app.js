@@ -54,9 +54,9 @@ app.get("/", async (req, res) => {
   const i18next = await require("./lib/i18n");
   console.log(i18next);
   i18next.changeLanguage(req.headers["accept-language"]);
-  res.send(i18next.t("Hello"));
-  req.t("Hello {{name}}", { name: "John" });
-  res.t("Hello {{name}}!", { name: "John" });
+  //res.send(i18next.t("Hello"));
+  //req.t("Hello {{name}}", { name: "John" });
+  //res.t("Hello {{name}}!", { name: "John" });
 });
 
 module.exports = app;
