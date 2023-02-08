@@ -1,5 +1,5 @@
 GET http://localhost:3000/v1/users
-Accept: application/text
+Accept: application/json
 Accept-Language: fr
 
 

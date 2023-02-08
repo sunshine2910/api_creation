@@ -1,6 +1,7 @@
 /**
  * User routes
  */
+const Hateoas = require("../../dto/HATEOAS");
 const { Router } = require("express");
 const PaginationDTO = require("../../dto/PaginationDTO");
 const UsersDtos = require("../../dto/UsersDto");
@@ -8,26 +9,40 @@ const { User } = require("../../models");
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const { order = {}, page, items_per_page = 30, ...filters } = req.query;
-  const options = {
-    where: filters,
-    order: Object.entries(order),
-  };
+router.get(
+  "/",
+  Hateoas({
+    links: {
+      self: {},
+      update: {
+        type: "PUT",
+      },
+      videos: {
+        path: "/videos",
+      },
+    },
+  }),
+  async (req, res) => {
+    const { order = {}, page, items_per_page = 30, ...filters } = req.query;
+    const options = {
+      where: filters,
+      order: Object.entries(order),
+    };
 
-  if (page) {
-    options.offset = (page - 1) * items_per_page;
-    options.limit = items_per_page;
+    if (page) {
+      options.offset = (page - 1) * items_per_page;
+      options.limit = items_per_page;
+    }
+
+    const users = await User.findAll(options);
+    delete options.offset;
+    delete options.limit;
+    const totalUsers = await User.count(options);
+    res.setHeader("Content-Type", "application/hal+json");
+    //res.render(new PaginationDTO(users, totalUsers, req));
+    res.render(users)
   }
-
-  const users = await User.findAll(options);
-  delete options.offset;
-  delete options.limit;
-  const totalUsers = await User.count(options);
-  const usersDtos = users.map((user) => new UsersDtos(user, req));
-  res.setHeader("Content-Type", "application/hal+json");
-  res.send(new PaginationDTO(usersDtos, totalUsers, req));
-});
+);
 
 router.post("/", async (req, res) => {
   const user = await User.create(req.body);
