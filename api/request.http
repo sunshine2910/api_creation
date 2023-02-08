@@ -1,4 +1,4 @@
-GET http://localhost:3000/
+GET http://localhost:3000/v1/users
 Accept: application/text
 Accept-Language: fr
 
@@ -11,7 +11,7 @@ GET http://localhost:3000/users/1
 
 
 ###
-POST http://localhost:3000/users
+POST http://localhost:3000/v1/users
 Content-Type: application/json
 
 {
