@@ -21,5 +21,13 @@ const routerV2 = require('./routes/v2/users.js');
 app.use("/users", apiVersions({
     v1: routerV1,
     v2: routerV2,
-}));
+}, "v2"));
+```
+## TP3 : Gestion Traduction
+
+- Gérer la traduction via un middleware.
+- Configurer la langue via le Header HTTP adéquat
+- Ajouter une fonction **t** à la requête correspondant à la fonction de traduction de i18next
+```js
+app.use(negociate_trad(i18next));
 ```
