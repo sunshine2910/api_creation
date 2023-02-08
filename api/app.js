@@ -10,18 +10,17 @@ app.use(
   express.json(),
   negociate_format({
     formats: ["application/json", "text/csv"],
-  })
-);
-
-app.use(function (req, res, next) {
-  if (req.headers["accept-version"]) {
-    req.api_version = req.headers["accept-version"];
-  } else if (req.query["_apiVersion"]) {
-    req.api_version = req.query["_apiVersion"];
-  } else {
-    req.api_version = defaultVersion;
+  }),
+  function (req, res, next) {
+    if (req.headers["accept-version"]) {
+      req.api_version = req.headers["accept-version"];
+    } else if (req.query["_apiVersion"]) {
+      req.api_version = req.query["_apiVersion"];
+    } else {
+      req.api_version = defaultVersion;
+    }
   }
-});
+);
 
 function negociate_format({ formats }) {
   return function (req, res, next) {
