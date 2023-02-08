@@ -2,11 +2,13 @@
  * Express App
  */
 const express = require("express");
+const i18next  = require("./lib/i18n");
 const { defaults } = require("pg");
 const app = express();
 
 // middleware
 app.use(
+  negociate_translation(i18next),
   express.json(),
   negociate_format({
     formats: ["application/json", "text/csv"],
@@ -71,13 +73,16 @@ function negociate_format({ formats }) {
 app.use("/v1/users", require("./routes/v1/users"));
 app.use("/v2/users", require("./routes/v2/users"));
 
-app.get("/", async (req, res) => {
-  const i18next = await require("./lib/i18n");
-  console.log(i18next);
+
+
+
+function negociate_translation(i18next){
+  return async function (req, res, next) {
   i18next.changeLanguage(req.headers["accept-language"]);
-  res.send(i18next.t("Hello"));
-  req.t("Hello {{name}}", { name: "John" });
-  res.t("Hello {{name}}!", { name: "John" });
-});
+  req.t = i18next.t
+  next();
+}
+};
+
 
 module.exports = app;
